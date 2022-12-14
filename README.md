@@ -56,7 +56,8 @@ to update the requirements.
 ## About Database
 
 * <https://hevodata.com/learn/sql-server-on-raspberry-pi/>
-* <https://realpython.com/python-sqlite-sqlalchemy/>
+* <https://docs.sqlalchemy.org/en/20/orm/quickstart.html>
+* <https://docs.sqlalchemy.org/en/20/tutorial/data_select.html#the-select-sql-expression-construct>
 * Database migrations: https://alembic.sqlalchemy.org/en/latest/
 
 ```sqlite
@@ -64,7 +65,7 @@ sqlite3 coffeebot.db
 .databases
 .schema
 .tables
-select * from coffebotLog;
+select * from coffeebotLog;
 ```
 
 ## Backlog

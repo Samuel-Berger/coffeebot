@@ -31,7 +31,6 @@ def main() -> None:
 
     while(True):
         power = measure(sensor_url)
-        database.insert(power, "Watt")
         
         if(power == -1.0):
             # Power is still changing or an exception occured, wait and measure again
@@ -40,26 +39,32 @@ def main() -> None:
 
         # Heating old coffee
         elif((power > 1.0) and (power <= 300.0) and not STATE["brewing"] and not STATE["coffeeDone"]):
+            database.insert("saving")
             heatingOldCoffee(hue, slack)
 
         # Fresh coffee has been made
         elif((power > 1.0) and (power <= 300.0) and STATE["brewing"]):
+            database.insert("done")
             freshCoffeeHasBeenMade(hue, slack)
 
         # Coffee is brewing
         elif(power > 1000.0 and not STATE["brewing"]):
+            database.insert("brewing")
             coffeeIsBrewing(hue, slack)
         
         # Still brewing, make lights blink
         elif(power > 1000.0 and STATE["brewing"]):
+            database.insert("brewing")
             stillBrewing(hue)
 
         # Coffee maker turned off
         elif(power == 0.0 and not STATE["turnedOff"]):
+            database.insert("off")
             coffeeMakerTurnedOff(hue, slack)
 
         # Idle, don't send messages
         elif(power == 0.0 and STATE["turnedOff"]):
+            database.insert("off")
             continue
 
         time.sleep(MEASURE_INTERVAL)
