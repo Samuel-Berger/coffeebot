@@ -12,6 +12,7 @@ import requests
 import time
 from hue import Hue
 from slack import Slack
+from database import Database
 
 # Dict representing brewer state
 STATE = {"brewing": False, "turnedOff": True, "coffeeDone": False}
@@ -23,10 +24,12 @@ Main loop
 def main() -> None:
     load_dotenv() # Load environment variables
     sensor_url = os.environ['SENSOR_URL']
+    database = Database()
     slack = Slack()
     hue = setupHue()
 
     while(True):
+        database.helloWorld()
         power = measure(sensor_url)
         if(power == -1.0):
             # Power is still changing or an exception occured, wait and measure again

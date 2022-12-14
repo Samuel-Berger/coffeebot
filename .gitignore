@@ -10,3 +10,4 @@ urls*
 .env
 venv*
 env/
+coffeebot.db
