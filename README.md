@@ -53,11 +53,19 @@ If you add any extra dependencies run (while inside the python enviroment)
 `pip list --local --format=freeze > requirements.txt`
 to update the requirements.
 
-## Links About Database
+## About Database
 
 * <https://hevodata.com/learn/sql-server-on-raspberry-pi/>
 * <https://realpython.com/python-sqlite-sqlalchemy/>
+* Database migrations: https://alembic.sqlalchemy.org/en/latest/
 
+```sqlite
+sqlite3 coffeebot.db
+.databases
+.schema
+.tables
+select * from coffebotLog;
+```
 
 ## Backlog
 See [Issues](https://github.com/phixarhasse/coffeebot/issues)

@@ -25,12 +25,14 @@ def main() -> None:
     load_dotenv() # Load environment variables
     sensor_url = os.environ['SENSOR_URL']
     database = Database()
+    database.createDatabase()
     slack = Slack()
     hue = setupHue()
 
     while(True):
-        database.helloWorld()
         power = measure(sensor_url)
+        database.insert(power, "Watt")
+        
         if(power == -1.0):
             # Power is still changing or an exception occured, wait and measure again
             time.sleep(MEASURE_INTERVAL/2)
@@ -61,7 +63,7 @@ def main() -> None:
             continue
 
         time.sleep(MEASURE_INTERVAL)
-
+        quit()
 """
 Polls the Shelly embedded web server for power usage [Watt] twice with MEASURE_INTERVAL seconds between.
 Returns second value if valid measure, -1.0 otherwise.
