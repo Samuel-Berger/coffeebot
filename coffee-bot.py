@@ -25,12 +25,12 @@ def main() -> None:
     load_dotenv() # Load environment variables
     sensor_url = os.environ['SENSOR_URL']
     database = Database()
-    database.createDatabase()
     slack = Slack()
     hue = setupHue()
 
     while(True):
-        power = measure(sensor_url)
+        power: float = measure(sensor_url)
+        # database.insert('Measure', power)
         
         if(power == -1.0):
             # Power is still changing or an exception occured, wait and measure again
@@ -39,36 +39,36 @@ def main() -> None:
 
         # Heating old coffee
         elif((power > 1.0) and (power <= 300.0) and not STATE["brewing"] and not STATE["coffeeDone"]):
-            database.insert("saving")
+            database.insert(r'Heating old coffee', power)
             heatingOldCoffee(hue, slack)
 
         # Fresh coffee has been made
         elif((power > 1.0) and (power <= 300.0) and STATE["brewing"]):
-            database.insert("done")
+            database.insert(r'Fresh coffee has been made', power)
             freshCoffeeHasBeenMade(hue, slack)
 
         # Coffee is brewing
         elif(power > 1000.0 and not STATE["brewing"]):
-            database.insert("brewing")
+            database.insert(r'Coffee is brewing', power)
             coffeeIsBrewing(hue, slack)
         
         # Still brewing, make lights blink
         elif(power > 1000.0 and STATE["brewing"]):
-            database.insert("brewing")
+            database.insert(r'Still brewing, make lights blink', power)
             stillBrewing(hue)
 
         # Coffee maker turned off
         elif(power == 0.0 and not STATE["turnedOff"]):
-            database.insert("off")
+            database.insert(r'Coffee maker turned off', power)
             coffeeMakerTurnedOff(hue, slack)
 
         # Idle, don't send messages
         elif(power == 0.0 and STATE["turnedOff"]):
-            database.insert("off")
+            database.insert(r'''Idle, don't send messages''', power)
             continue
 
         time.sleep(MEASURE_INTERVAL)
-        quit()
+
 """
 Polls the Shelly embedded web server for power usage [Watt] twice with MEASURE_INTERVAL seconds between.
 Returns second value if valid measure, -1.0 otherwise.
